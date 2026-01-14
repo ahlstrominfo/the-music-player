@@ -6,12 +6,21 @@ Scans QR codes via webcam and plays corresponding albums.
 QR code contains the album folder name directly (e.g., "beatles-abbey-road").
 """
 
+import logging
 import sys
 import time
 from pathlib import Path
 
 from scanner import QRScanner
 from player import AlbumPlayer
+
+# Configure logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    datefmt="%H:%M:%S",
+)
+logger = logging.getLogger(__name__)
 
 
 # Special QR code value to stop playback
@@ -30,22 +39,21 @@ def main():
     if len(sys.argv) > 1:
         music_dir = Path(sys.argv[1])
 
-    print("=" * 50)
-    print("QR Code Music Player")
-    print("=" * 50)
-    print(f"Music folder: {music_dir}")
+    logger.info("=" * 50)
+    logger.info("QR Code Music Player")
+    logger.info("=" * 50)
+    logger.info(f"Music folder: {music_dir}")
 
     # List available albums
     albums = [d.name for d in music_dir.iterdir() if d.is_dir() and not d.name.startswith(".")]
-    print(f"Found {len(albums)} albums")
-    print()
+    logger.info(f"Found {len(albums)} albums: {albums}")
 
     # Track last scanned code for debouncing
     last_code = None
     last_code_time = 0
 
-    print("Starting scanner... (Press Ctrl+C to exit)")
-    print("-" * 50)
+    logger.info("Starting scanner... (Press Ctrl+C to exit)")
+    logger.info("-" * 50)
 
     with QRScanner() as scanner, AlbumPlayer(music_dir) as player:
         try:
@@ -62,20 +70,20 @@ def main():
                     last_code = code
                     last_code_time = current_time
 
-                    print(f"\nScanned: {code}")
+                    logger.info(f"Scanned: {code}")
 
                     if code == STOP_CODE:
                         player.stop_playback()
                     elif (music_dir / code).is_dir():
                         player.play_album(code)
                     else:
-                        print(f"Album not found: {code}")
+                        logger.warning(f"Album not found: {code}")
 
                 # Small delay to reduce CPU usage
                 time.sleep(0.1)
 
         except KeyboardInterrupt:
-            print("\n\nShutting down...")
+            logger.info("Shutting down...")
 
 
 if __name__ == "__main__":
