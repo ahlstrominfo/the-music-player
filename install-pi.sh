@@ -20,19 +20,22 @@ sudo apt-get update
 sudo apt-get install -y \
     python3-pip \
     python3-venv \
-    libzbar0 \
-    ffmpeg
+    ffmpeg \
+    python3-opencv
+
+# Install zbar (package name varies by OS version)
+sudo apt-get install -y libzbar0t64 2>/dev/null || sudo apt-get install -y libzbar0
 
 echo ""
 echo "Creating Python virtual environment..."
 cd "$SCRIPT_DIR"
-python3 -m venv venv
+python3 -m venv --system-site-packages venv
 source venv/bin/activate
 
 echo ""
 echo "Installing Python packages..."
 pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirements-pi.txt
 
 echo ""
 echo "Setting up systemd service..."

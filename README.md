@@ -135,8 +135,9 @@ the-music-player/
 - Try different camera index in code
 
 **No sound on Pi**
-- Verify audio output: `sudo raspi-config`
-- Test audio: `speaker-test -t wav`
+- List devices: `aplay -l` (find "bcm2835 Headphones", note card number)
+- Set default: `echo 'defaults.pcm.card 1' | sudo tee /etc/asound.conf`
+- Test audio: `speaker-test -t wav -c 2`
 
 **M4A files don't play on Pi**
 - Install codec support: `sudo apt install ffmpeg libavcodec-extra`

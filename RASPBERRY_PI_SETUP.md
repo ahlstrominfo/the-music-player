@@ -70,14 +70,12 @@ sudo apt update && sudo apt upgrade -y
 
 ## Step 5: Configure Audio Output
 
+Set the 3.5mm jack as the default audio output:
+
 ```bash
-sudo raspi-config
+echo 'defaults.pcm.card 1
+defaults.ctl.card 1' | sudo tee /etc/asound.conf
 ```
-
-Navigate to:
-- **System Options** → **Audio** → **3.5mm jack**
-
-Exit and save.
 
 Test audio:
 
@@ -86,6 +84,14 @@ speaker-test -t wav -c 2
 ```
 
 You should hear "Front Left, Front Right" from your speakers. Press Ctrl+C to stop.
+
+If you don't hear anything, check which card is the headphone output:
+
+```bash
+aplay -l
+```
+
+Look for "bcm2835 Headphones" - note the card number and update `/etc/asound.conf` accordingly.
 
 ## Step 6: Install Git
 
@@ -214,9 +220,12 @@ sudo systemctl enable qr-music-player
 ### No audio
 
 ```bash
-# Check audio is set to 3.5mm
-sudo raspi-config
-# System Options → Audio → 3.5mm jack
+# Check available audio devices
+aplay -l
+
+# Set 3.5mm jack (usually card 1) as default
+echo 'defaults.pcm.card 1
+defaults.ctl.card 1' | sudo tee /etc/asound.conf
 
 # Test speakers
 speaker-test -t wav -c 2
