@@ -7,7 +7,9 @@ A Raspberry Pi music player that plays albums when you scan QR codes. Perfect fo
 1. Put albums in folders like `music/beatles-abbey-road/`
 2. Generate QR cards (QR code contains the folder name)
 3. Scan a card with the webcam → album starts playing
-4. Scan the STOP card → music stops
+4. Scan the same album again → ignored (doesn't restart)
+5. Scan **SKIP** → skip to next track
+6. Scan **STOP** → stop playback
 
 ## Supported Formats
 
@@ -103,10 +105,29 @@ journalctl -u qr-music-player -f
 sudo systemctl disable qr-music-player
 ```
 
+## Managing Music from Mac
+
+### Sync albums to Pi
+
+```bash
+# Put albums in local music/ folder
+cp -r ~/Music/some-album ./music/some-album
+
+# Upload new albums to Pi (skips existing)
+./tools/sync_music_to_pi.sh
+```
+
+### Generate QR cards from Pi
+
+```bash
+# Fetch album list from Pi and generate QR codes locally
+./tools/generate_qr_from_pi.sh
+```
+
 ## Printing Cards
 
-1. Add albums to `music/`
-2. Generate QR codes: `python tools/generate_qr.py`
+1. Add albums to Pi (via `sync_music_to_pi.sh` or directly)
+2. Generate QR codes: `./tools/generate_qr_from_pi.sh`
 3. Print images from `qr-cards/`
 4. Cut and optionally laminate for durability
 
@@ -121,7 +142,10 @@ the-music-player/
 │   ├── scanner.py     # Webcam QR scanning
 │   └── player.py      # Audio playback
 ├── tools/
-│   └── generate_qr.py # QR card generator
+│   ├── generate_qr.py         # QR card generator
+│   ├── generate_qr_from_pi.sh # Generate QR cards from Pi's album list
+│   ├── sync_music_to_pi.sh    # Upload new albums to Pi
+│   └── test_scanner.py        # Debug QR scanning
 ├── music/             # Album folders (folder name = QR code)
 ├── qr-cards/          # Generated QR images
 ├── requirements.txt
