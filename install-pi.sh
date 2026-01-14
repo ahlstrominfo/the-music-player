@@ -41,16 +41,21 @@ pip install -r requirements-pi.txt
 echo ""
 echo "Setting up systemd service..."
 
+# Get user ID for audio session access
+USER_ID=$(id -u)
+
 # Create service file
 sudo tee "$SERVICE_FILE" > /dev/null <<EOF
 [Unit]
 Description=QR Code Music Player
-After=network.target sound.target
+After=network.target sound.target pipewire.service
 
 [Service]
 Type=simple
 User=$USER
 WorkingDirectory=$SCRIPT_DIR
+Environment=XDG_RUNTIME_DIR=/run/user/$USER_ID
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus
 ExecStart=$SCRIPT_DIR/venv/bin/python $SCRIPT_DIR/src/main.py
 Restart=always
 RestartSec=5
