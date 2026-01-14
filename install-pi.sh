@@ -21,6 +21,7 @@ sudo apt-get install -y \
     python3-pip \
     python3-venv \
     ffmpeg \
+    mpv \
     python3-opencv
 
 # Install zbar (package name varies by OS version)

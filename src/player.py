@@ -48,8 +48,8 @@ class AlbumPlayer:
             # macOS: use afplay (built-in)
             return ["afplay", str(track_path)]
         else:
-            # Linux/Pi: try ffplay first (supports more formats), fallback to mpg123
-            return ["ffplay", "-nodisp", "-autoexit", "-loglevel", "quiet", str(track_path)]
+            # Linux/Pi: use mpv with ALSA output (works in systemd service)
+            return ["mpv", "--no-video", "--ao=alsa", str(track_path)]
 
     def play_album(self, album_id: str):
         """Start playing an album from the beginning."""
