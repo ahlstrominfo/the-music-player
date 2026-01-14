@@ -77,7 +77,8 @@ def main():
                     elif (music_dir / code).is_dir():
                         player.play_album(code)
                     else:
-                        logger.warning(f"Album not found: {code}")
+                        logger.warning(f"Album not found: '{code}'")
+                        logger.warning(f"Available albums: {albums}")
 
                 # Small delay to reduce CPU usage
                 time.sleep(0.1)
