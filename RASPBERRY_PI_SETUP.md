@@ -235,6 +235,35 @@ alsamixer
 # Use arrow keys to adjust, ESC to exit
 ```
 
+### Audio works manually but not from service
+
+The service needs access to your pipewire session. Check the service has these environment variables:
+
+```bash
+sudo systemctl cat qr-music-player | grep Environment
+```
+
+Should show:
+```
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+```
+
+If missing, re-run `./install-pi.sh` or add them manually:
+
+```bash
+sudo systemctl edit qr-music-player
+```
+
+Add:
+```ini
+[Service]
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+Environment=DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus
+```
+
+Then `sudo systemctl daemon-reload && sudo systemctl restart qr-music-player`
+
 ### Camera not detected
 
 ```bash
