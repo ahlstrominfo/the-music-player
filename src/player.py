@@ -140,6 +140,18 @@ class AlbumPlayer:
             self.is_playing = False
             logger.info("Playback stopped")
 
+    def skip_track(self):
+        """Skip to the next track."""
+        if self.is_playing and self._current_process:
+            logger.info("Skipping to next track")
+            self._current_process.terminate()
+            try:
+                self._current_process.wait(timeout=1.0)
+            except subprocess.TimeoutExpired:
+                self._current_process.kill()
+        else:
+            logger.info("Nothing playing to skip")
+
     def __enter__(self):
         self.start()
         return self

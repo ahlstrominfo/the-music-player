@@ -98,11 +98,14 @@ def generate_from_music_folder(music_dir: Path, output_dir: Path):
         # QR code contains the folder name directly
         create_qr_card(album_name, label, output_path)
 
-    # Always generate STOP card
+    # Always generate control cards
     stop_path = output_dir / "STOP.png"
     create_qr_card("STOP", "STOP", stop_path)
 
-    print(f"\nGenerated {len(albums) + 1} QR cards in {output_dir}")
+    skip_path = output_dir / "SKIP.png"
+    create_qr_card("SKIP", "SKIP", skip_path)
+
+    print(f"\nGenerated {len(albums) + 2} QR cards in {output_dir}")
 
 
 def main():

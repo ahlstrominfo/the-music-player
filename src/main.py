@@ -23,8 +23,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Special QR code value to stop playback
+# Special QR code values
 STOP_CODE = "STOP"
+SKIP_CODE = "SKIP"
 
 # Minimum time between processing the same QR code (seconds)
 DEBOUNCE_TIME = 2.0
@@ -74,8 +75,14 @@ def main():
 
                     if code == STOP_CODE:
                         player.stop_playback()
+                    elif code == SKIP_CODE:
+                        player.skip_track()
                     elif (music_dir / code).is_dir():
-                        player.play_album(code)
+                        # Don't restart if same album is already playing
+                        if player.current_album == code and player.is_playing:
+                            logger.info(f"Album '{code}' already playing, ignoring")
+                        else:
+                            player.play_album(code)
                     else:
                         logger.warning(f"Album not found: '{code}'")
                         logger.warning(f"Available albums: {albums}")
