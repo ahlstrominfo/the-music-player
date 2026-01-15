@@ -48,9 +48,8 @@ class AlbumPlayer:
             # macOS: use afplay (built-in)
             return ["afplay", str(track_path)]
         else:
-            # Linux/Pi: try pipewire first, fall back to ALSA
-            # Set audio device via environment or use default
-            return ["mpv", "--no-video", str(track_path)]
+            # Linux/Pi: use mpv with max volume
+            return ["mpv", "--no-video", "--volume=100", str(track_path)]
 
     def play_album(self, album_id: str):
         """Start playing an album from the beginning."""
